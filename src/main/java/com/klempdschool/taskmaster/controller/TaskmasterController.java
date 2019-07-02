@@ -9,10 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 @Controller
 public class TaskmasterController {
 
@@ -50,14 +46,14 @@ public class TaskmasterController {
                 result.setStatus(FINISHED);
                 break;
         }
-
         taskmasterRepository.save(result);
-       return ResponseEntity.ok(result);
+        return ResponseEntity.ok(result);
     }
 
     @RequestMapping(value = "/tasks/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<Taskmaster> deleteTask(@PathVariable String id) {
         Taskmaster result = taskmasterRepository.findById(id).get();
+
         return ResponseEntity.ok(result);
     }
 }
