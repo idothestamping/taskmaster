@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
 import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.klempdschool.taskmaster.model.Taskmaster;
 import com.klempdschool.taskmaster.repository.TaskmasterRepository;
 //import javafx.application.Application;
 import org.junit.Before;
@@ -35,6 +36,7 @@ public class TaskmasterIntegrationTest {
 
     private static final String EXPECTED_TITLE = "test title";
     private static final String EXPECTED_DESCRIPTION = "this is the description for taskmaster";
+    private static final String EXPECTED_ASSIGNEE = "doug";
     private static final String EXPECTED_STATUS = "available";
 
     @Before
@@ -50,7 +52,7 @@ public class TaskmasterIntegrationTest {
 
     @Test
     public void readWriteTestCase() {
-        Taskmaster potato = new Taskmaster(EXPECTED_TITLE, EXPECTED_DESCRIPTION, EXPECTED_STATUS);
+        Taskmaster potato = new Taskmaster(EXPECTED_TITLE, EXPECTED_ASSIGNEE, EXPECTED_DESCRIPTION, EXPECTED_STATUS);
         repository.save(potato);
 
         List<Taskmaster> result = (List<Taskmaster>) repository.findAll();
