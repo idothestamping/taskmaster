@@ -1,13 +1,13 @@
 package com.klempdschool.taskmaster.controller;
 
-import com.klempdschool.taskmaster.Taskmaster;
+import com.klempdschool.taskmaster.model.Taskmaster;
 import com.klempdschool.taskmaster.repository.TaskmasterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Controller
 public class TaskmasterController {
@@ -20,40 +20,61 @@ public class TaskmasterController {
     @Autowired
     private TaskmasterRepository taskmasterRepository;
 
-    @RequestMapping(value = "/tasks", method = RequestMethod.GET)
+    /*** Get all Tasks ***/
+    @GetMapping("/tasks")
         public ResponseEntity<Iterable<Taskmaster>> findalltask(){
             return ResponseEntity.ok(taskmasterRepository.findAll());
     }
 
-    @RequestMapping(value = "/tasks", method = RequestMethod.POST)
-    public ResponseEntity<Iterable<Taskmaster>> addnew(String title, String description, String status){
-        Taskmaster potato = new Taskmaster(title, description, status);
-        taskmasterRepository.save(potato);
+    /*** Create new Task ***/
+    // Example Postman usage to add data:
+    // http://localhost:8080/tasks/?title=Sample Task3&description=Created using postman&status=Available&assignee=Doug
+    @PostMapping("/tasks")
+    public ResponseEntity<Iterable<Taskmaster>> addnew(String title, String description, String assignee, String status){
+        Taskmaster newTask = new Taskmaster(title, description, assignee, status);
+        taskmasterRepository.save(newTask);
         return ResponseEntity.ok(taskmasterRepository.findAll());
     }
 
-    @RequestMapping(value = "/tasks/{id}/status", method = RequestMethod.PUT)
+    /*** Change user's task status ***/
+    @PutMapping("/tasks/{id}/state")
     public ResponseEntity<Taskmaster> editTask(@PathVariable String id){
-       Taskmaster result = taskmasterRepository.findById(id).get();
-        switch(result.getStatus()){
+       Taskmaster statusChange = taskmasterRepository.findById(id).get();
+        switch(statusChange.getStatus()){
             case AVAILABLE:
-                result.setStatus(ASSIGNED);
+                statusChange.setStatus(ASSIGNED);
                 break;
             case ASSIGNED:
-                result.setStatus(ACCEPTED);
+                statusChange.setStatus(ACCEPTED);
                 break;
             case ACCEPTED:
-                result.setStatus(FINISHED);
+                statusChange.setStatus(FINISHED);
                 break;
         }
-        taskmasterRepository.save(result);
-        return ResponseEntity.ok(result);
+        taskmasterRepository.save(statusChange);
+        return ResponseEntity.ok(statusChange);
     }
 
-    @RequestMapping(value = "/tasks/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<Taskmaster> deleteTask(@PathVariable String id) {
-        Taskmaster result = taskmasterRepository.findById(id).get();
+    /*** View assigned user's tasks ***/
+    @GetMapping("/tasks/{name}/tasks")
+    public ResponseEntity<List<Taskmaster>> getUserTask(@PathVariable String name) {
+        List<Taskmaster> inputName = taskmasterRepository.findByAssignee(name);
+        if (inputName != null) {
+            return ResponseEntity.ok(inputName);
+        }
+        return null;
+    }
 
-        return ResponseEntity.ok(result);
+    /****** Re-assign task *********/
+    @PutMapping("/tasks/{id}/assign/{assignee}")
+    public ResponseEntity<Taskmaster> updateAssignee(@PathVariable String id, @PathVariable String assignee){
+        Taskmaster current = taskmasterRepository.findById(id).get();
+
+        if(!assignee.equals(current.getAssignee())){
+            current.setStatus(ASSIGNED);
+            current.setAssignee(assignee);
+            taskmasterRepository.save(current);
+        }
+        return ResponseEntity.ok(current);
     }
 }
