@@ -30,6 +30,7 @@ public class TaskmasterController {
     /*** Create new Task ***/
     // Example Postman usage to add data:
     // http://localhost:8080/tasks/?title=Sample Task3&description=Created using postman&status=Available&assignee=Doug
+    @CrossOrigin
     @PostMapping("/tasks")
     public ResponseEntity<Iterable<Taskmaster>> addnew(String title, String description, String assignee, String status){
         Taskmaster newTask = new Taskmaster(title, description, assignee, status);
@@ -38,6 +39,7 @@ public class TaskmasterController {
     }
 
     /*** Change user's task status ***/
+    @CrossOrigin
     @PutMapping("/tasks/{id}/state")
     public ResponseEntity<Taskmaster> editTask(@PathVariable String id){
        Taskmaster statusChange = taskmasterRepository.findById(id).get();
@@ -67,6 +69,7 @@ public class TaskmasterController {
     }
 
     /****** Re-assign task *********/
+    @CrossOrigin
     @PutMapping("/tasks/{id}/assign/{assignee}")
     public ResponseEntity<Taskmaster> updateAssignee(@PathVariable String id, @PathVariable String assignee){
         Taskmaster current = taskmasterRepository.findById(id).get();
