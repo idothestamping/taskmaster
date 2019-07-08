@@ -21,6 +21,7 @@ public class TaskmasterController {
     private TaskmasterRepository taskmasterRepository;
 
     /*** Get all Tasks ***/
+    @CrossOrigin
     @GetMapping("/tasks")
         public ResponseEntity<Iterable<Taskmaster>> findalltask(){
             return ResponseEntity.ok(taskmasterRepository.findAll());
