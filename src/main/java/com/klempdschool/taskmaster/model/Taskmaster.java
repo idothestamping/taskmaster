@@ -14,6 +14,7 @@ public class Taskmaster {
     private String description;
     private String assignee;
     private String status;
+    private String pic;
 
     public Taskmaster() {
 
@@ -24,6 +25,14 @@ public class Taskmaster {
         this.description = description;
         this.assignee = assignee;
         this.status = status;
+    }
+
+    public Taskmaster(String title, String description, String assignee, String status, String Pic) {
+        this.title = title;
+        this.description = description;
+        this.assignee = assignee;
+        this.status = status;
+        this.pic = pic;
     }
 
     @DynamoDBHashKey
@@ -65,4 +74,9 @@ public class Taskmaster {
     public String getAssignee() { return assignee; }
 
     public void setAssignee(String assignee) { this.assignee = assignee; }
+
+    @DynamoDBAttribute
+    public String getPic() { return pic; }
+
+    public void setPic(String pic) { this.pic = pic; }
 }
