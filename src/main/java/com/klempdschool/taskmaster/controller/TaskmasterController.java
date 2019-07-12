@@ -112,4 +112,9 @@ public class TaskmasterController {
         taskmasterRepository.save(updateTask);
         return ResponseEntity.ok(updateTask);
     }
+
+//    @GetMapping("/tasks/{id}/images")
+//    public ResponseEntity<Iterable<Taskmaster>> updatedImage() {
+//        return ResponseEntity.ok(taskmasterRepository.findAll());
+//    }
 }
